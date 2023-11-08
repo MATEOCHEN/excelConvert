@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
@@ -13,15 +14,14 @@ namespace ExcelConverter
     {
         public static void Main(string[] args)
         {
-            const string fileInfo = @"C:\Users\steze\Desktop\Project\ExcelConverter\產品清單.xls";
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var fileInfo = $"{baseDirectory}產品清單.xls";
             IWorkbook outputWorkBook = new HSSFWorkbook(); // For XLS format
 
             var worksheet = outputWorkBook.CreateSheet("產出結果");
 
             using (var fileStream = new FileStream(fileInfo, FileMode.Open, FileAccess.Read))
             {
-                // Create an HSSFWorkbook object (for XLS files)
-
                 var readSheet = new HSSFWorkbook(fileStream).GetSheetAt(0);
                 SetHeaderValueWithSpec(worksheet, readSheet);
                 SetBodyValue(readSheet, worksheet);
