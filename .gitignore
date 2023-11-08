@@ -1,1 +1,3 @@
-.idea
+/.idea
+/packages
+ExcelConverter/obj
