@@ -48,22 +48,45 @@ namespace ExcelConverter
                         continue;
                     }
 
-                    if (cell != null && column == 0)
+                    if (cell != null)
                     {
-                        var values = cell.StringCellValue.Split(' ');
-                        values[values.Length - 1] = string.Empty;
+                        var cellStringCellValue = cell.StringCellValue.TrimEnd();
+                        switch (column)
+                        {
+                            case 0:
+                            {
+                                var values = cellStringCellValue.Split(' ');
+                                values[values.Length - 1] = string.Empty;
 
-                        var newCell = workRow.CreateCell(column);
-                        newCell.SetCellValue(string.Join(" ", values));
-                    }
+                                var newCell = workRow.CreateCell(column);
+                                newCell.SetCellValue(string.Join(" ", values));
+                                break;
+                            }
+                            case 1:
+                            {
+                                var values = cellStringCellValue.Split(' ');
+                                var lastIndex = values.Length - 1;
+                                var spec = string.Empty;
+                                var tempSpec = values[lastIndex];
+                                spec = tempSpec + spec;
+                                var haveDigitNumber = spec.Any(char.IsDigit);
+                                while (!haveDigitNumber)
+                                {
+                                    if (lastIndex == 0)
+                                    {
+                                        break;
+                                    }
+                                    lastIndex -= 1;
+                                    tempSpec = values[lastIndex];
+                                    spec = tempSpec + spec;
+                                    haveDigitNumber = tempSpec.Any(char.IsDigit);
+                                }
 
-                    if (cell != null && column == 1)
-                    {
-                        var values = cell.StringCellValue.Split(' ');
-                        var spec = values[values.Length - 1];
-
-                        var newCell = workRow.CreateCell(column);
-                        newCell.SetCellValue(spec);
+                                var newCell = workRow.CreateCell(column);
+                                newCell.SetCellValue(spec);
+                                break;
+                            }
+                        }
                     }
 
                     if (cell != null && column > 1)
